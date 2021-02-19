@@ -6,6 +6,7 @@ import re
 
 import boto3
 
+env_prefix = "aws"
 # NAME REGEXES
 # tlp
 tlpr = re.compile('^tlp*')
@@ -64,8 +65,20 @@ data = [ item['Instances'][0] for item in client.describe_instances()['Reservati
 instances = []
 for instance in data:
     try:
+        #################################################
+        ### SECOND CUSTOM BIT, CHANGES WITH THE DATA  ###
+        #################################################
+        # tease out the hostname and designate it as 'name' 
         if instance.get('Tags')[0]['Key'] == "Name":
             name = instance.get('Tags')[0]['Value']
+
+        #############################
+        ### END SECOND CUSTOM BIT ###
+        #############################
+
+        # Name based grouping logic ladder
+        # Anything that doesn't match a regex gets
+        # dropped into env_prefix-proj (project VMs)
             instances.append(name)
             if tlpr.match(name):
                 tlps.append(name)
@@ -100,23 +113,23 @@ for instance in data:
         continue
 
 inventory = {
-    "aws": {
+    env_prefix: {
         "hosts": instances,
     }
 }
-if len(tlps) > 0: inventory['aws_tlp'] = {'hosts': tlps}
-if len(mails) > 0: inventory['aws_mail'] = {'hosts': mails}
-if len(bbs) > 0: inventory['aws_bb'] = {'hosts': bbs}
-if len(msqls) > 0: inventory['aws_mysql'] = {'hosts': msqls}
-if len(msqls) > 0: inventory['aws_psql'] =  {'hosts': psqls}
-if len(jenkinss) > 0: inventory['aws_jenkins'] = {'hosts': jenkinss}
-if len(atls) > 0: inventory['aws_atlas'] = {'hosts': atls}
-if len(infras) > 0: inventory['aws_infra'] = {'hosts': infras}
-if len(projs) > 0: inventory['aws_proj'] = {'hosts': projs}
+if len(tlps) > 0: inventory[env_prefix+'_tlp'] = {'hosts': tlps}
+if len(mails) > 0: inventory[env_prefix+'_mail'] = {'hosts': mails}
+if len(bbs) > 0: inventory[env_prefix+'_bb'] = {'hosts': bbs}
+if len(msqls) > 0: inventory[env_prefix+'_mysql'] = {'hosts': msqls}
+if len(msqls) > 0: inventory[env_prefix+'_psql'] =  {'hosts': psqls}
+if len(jenkinss) > 0: inventory[env_prefix+'_jenkins'] = {'hosts': jenkinss}
+if len(atls) > 0: inventory[env_prefix+'_atlas'] = {'hosts': atls}
+if len(infras) > 0: inventory[env_prefix+'_infra'] = {'hosts': infras}
+if len(projs) > 0: inventory[env_prefix+'_proj'] = {'hosts': projs}
 
 if args.list:
     print(json.dumps(inventory))
-elif args.host in inventory['aws']:
+elif args.host in inventory[env_prefix]:
     print(json.dumps(inventory['vars']))
 else:
     print(json.dumps(inventory))
