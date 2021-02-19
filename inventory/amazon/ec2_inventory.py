@@ -104,22 +104,15 @@ inventory = {
         "hosts": instances,
     }
 }
-if len(tlps) > 0: inventory['aws_tlp'] = tlps
-if len(mails) > 0: inventory['aws_mail'] = mails
-if len(bbs) > 0: inventory['aws_bb'] = bbs
-if len(msqls) > 0: inventory['aws_mysql'] = msqls
-if len(psqls) > 0: inventory['aws_psql'] = psqls
-if len(jenkinss) > 0: inventory['aws_jenkins'] = jenkinss
-if len(atls) > 0: inventory['aws_atlassian'] = atls
-
-if len(infras) > 0: 
-    if len(atls) > 0:
-        inventory['aws_infra'] = {} 
-        inventory['aws_infra']['children'] = ["aws_atlassian"]
-        inventory['aws_infra']['hosts'] = infras
-    else:
-        inventory['aws_infra'] = infras
-if len(projs) > 0: inventory['aws_proj'] = projs
+if len(tlps) > 0: inventory['aws_tlp'] = {'hosts': tlps}
+if len(mails) > 0: inventory['aws_mail'] = {'hosts': mails}
+if len(bbs) > 0: inventory['aws_bb'] = {'hosts': bbs}
+if len(msqls) > 0: inventory['aws_mysql'] = {'hosts': msqls}
+if len(msqls) > 0: inventory['aws_psql'] =  {'hosts': psqls}
+if len(jenkinss) > 0: inventory['aws_jenkins'] = {'hosts': jenkinss}
+if len(atls) > 0: inventory['aws_atlas'] = {'hosts': atls}
+if len(infras) > 0: inventory['aws_infra'] = {'hosts': infras}
+if len(projs) > 0: inventory['aws_proj'] = {'hosts': projs}
 
 if args.list:
     print(json.dumps(inventory))
