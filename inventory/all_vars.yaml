@@ -1,4 +1,0 @@
-all:
-  vars:
-    host_domain: "apache.org"
-    ansible_host: "{{ inventory_hostname }}.{{ host_domain }}"
