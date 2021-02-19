@@ -1,0 +1,11 @@
+aws-mail:
+  vars:
+
+aws-jenkins:
+  vars:
+
+aws-mysql:
+  vars:
+
+aws-psql:
+  vars:
