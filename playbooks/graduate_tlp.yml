@@ -1,0 +1,15 @@
+---
+- hosts: jitsi.voltpop.com
+  tasks:
+    - name: "Testing whoami if '{{ project }}' is provided"
+      become_method: "sudo -Hsu"
+      become_user: "www-data"
+      shell: 
+        cmd: "whoami"
+      when: project is defined
+      register: iam
+
+    - name: "Print identity"
+      debug:
+        var: iam
+ 
