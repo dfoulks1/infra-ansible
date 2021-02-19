@@ -1,28 +1,10 @@
 #!/usr/bin/python3
 
-import boto3
 import json
-import pprint
 import argparse
 import re
 
-parser = argparse.ArgumentParser("Ansible EC2 inventory script")
-parser.add_argument(
-    "--list",
-    action="store_true",
-)
-parser.add_argument(
-    "--host",
-    action="store",
-)
-
-args = parser.parse_args()
-
-client = boto3.client('ec2')
-pp = pprint.PrettyPrinter(depth=4)
-data = [ item['Instances'][0] for item in client.describe_instances()['Reservations'] ]
-
-# pp.pprint(data)
+import boto3
 
 # NAME REGEXES
 # tlp
@@ -54,6 +36,30 @@ infrar = re.compile('^git*|^tools*')
 infras = []
 # Project VMs
 projs = []
+
+parser = argparse.ArgumentParser("Ansible EC2 inventory script")
+parser.add_argument(
+    "--list",
+    action="store_true",
+)
+parser.add_argument(
+    "--host",
+    action="store",
+)
+
+args = parser.parse_args()
+
+
+##################################################
+### THE CUSTOM BIT, CHANGES WITH THE PLATFORM  ###
+##################################################
+
+client = boto3.client('ec2')
+data = [ item['Instances'][0] for item in client.describe_instances()['Reservations'] ]
+
+######################
+### END CUSTOM BIT ###
+######################
 
 instances = []
 for instance in data:
